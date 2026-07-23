@@ -1,20 +1,85 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Users, Package, ArrowUpRight, ArrowDownLeft, AlertTriangle, History, FileText, X } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Package,
+  ArrowUpRight,
+  ArrowDownLeft,
+  AlertTriangle,
+  History,
+  FileText,
+  X,
+} from "lucide-react";
 
 const Sidebar = ({ isOpen, onClose }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const role = user?.role;
+
   const links = [
-    { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { to: "/customers", label: "Customers", icon: Users },
-    { to: "/products", label: "Products", icon: Package },
-    { to: "/inventory/stock-in", label: "Stock In", icon: ArrowDownLeft },
-    { to: "/inventory/stock-out", label: "Stock Out", icon: ArrowUpRight },
-    { to: "/inventory/low-stock", label: "Low Stock Alerts", icon: AlertTriangle },
-    { to: "/inventory/history", label: "Inventory History", icon: History },
-    { to: "/challans", label: "Sales Challans", icon: FileText },
+    // Dashboard - Everyone
+    {
+      to: "/dashboard",
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      roles: ["ADMIN", "SALES", "ACCOUNTS", "WAREHOUSE"],
+    },
+
+    // Customers
+    {
+      to: "/customers",
+      label: "Customers",
+      icon: Users,
+      roles: ["ADMIN", "SALES", "ACCOUNTS"],
+    },
+
+    // Products
+    {
+      to: "/products",
+      label: "Products",
+      icon: Package,
+      roles: ["ADMIN", "SALES", "WAREHOUSE"],
+    },
+
+    // Inventory
+    {
+      to: "/inventory/stock-in",
+      label: "Stock In",
+      icon: ArrowDownLeft,
+      roles: ["ADMIN", "WAREHOUSE"],
+    },
+    {
+      to: "/inventory/stock-out",
+      label: "Stock Out",
+      icon: ArrowUpRight,
+      roles: ["ADMIN", "WAREHOUSE"],
+    },
+    {
+      to: "/inventory/low-stock",
+      label: "Low Stock Alerts",
+      icon: AlertTriangle,
+      roles: ["ADMIN", "WAREHOUSE"],
+    },
+    {
+      to: "/inventory/history",
+      label: "Inventory History",
+      icon: History,
+      roles: ["ADMIN", "WAREHOUSE"],
+    },
+
+    // Challans
+    {
+      to: "/challans",
+      label: "Sales Challans",
+      icon: FileText,
+      roles: ["ADMIN", "SALES", "WAREHOUSE"],
+    },
   ];
 
-  const activeClass = "flex items-center gap-3 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-indigo/10 text-brand-indigo transition-all";
-  const inactiveClass = "flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all";
+  const activeClass =
+    "flex items-center gap-3 px-4 py-2.5 text-sm font-semibold rounded-lg bg-brand-indigo/10 text-brand-indigo transition-all";
+
+  const inactiveClass =
+    "flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-lg text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-all";
 
   return (
     <>
@@ -36,8 +101,12 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="w-8 h-8 rounded-lg bg-brand-indigo flex items-center justify-center text-white font-bold text-base shadow-sm">
               E
             </div>
-            <span className="text-lg font-bold text-slate-800 tracking-tight">Mini ERP CRM</span>
+
+            <span className="text-lg font-bold text-slate-800 tracking-tight">
+              Mini ERP CRM
+            </span>
           </div>
+
           <button
             onClick={onClose}
             className="p-1 rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden cursor-pointer"
@@ -48,17 +117,21 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         <nav className="flex-1 px-4 py-6 space-y-1.5 overflow-y-auto">
-          {links.map(({ to, label, icon: Icon }) => (
-            <NavLink
-              key={to}
-              to={to}
-              onClick={onClose}
-              className={({ isActive }) => (isActive ? activeClass : inactiveClass)}
-            >
-              <Icon size={18} className="flex-shrink-0" />
-              <span>{label}</span>
-            </NavLink>
-          ))}
+          {links
+            .filter((link) => link.roles.includes(role))
+            .map(({ to, label, icon: Icon }) => (
+              <NavLink
+                key={to}
+                to={to}
+                onClick={onClose}
+                className={({ isActive }) =>
+                  isActive ? activeClass : inactiveClass
+                }
+              >
+                <Icon size={18} className="flex-shrink-0" />
+                <span>{label}</span>
+              </NavLink>
+            ))}
         </nav>
       </aside>
     </>

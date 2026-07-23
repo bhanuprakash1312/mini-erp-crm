@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/auth";
-import { Mail, Lock, LogIn, Loader2 } from "lucide-react";
+import { Mail, Lock, LogIn, Loader2, AlertCircle } from "lucide-react";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,6 +12,7 @@ const Login = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData((prev) => ({
@@ -22,6 +23,7 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
     try {
       setLoading(true);
@@ -33,13 +35,11 @@ const Login = () => {
       localStorage.setItem("token", response.token);
       localStorage.setItem("user", JSON.stringify(response.user));
 
-      console.log("Token saved");
-      console.log("before")
 
       navigate("/dashboard");
-      console.log("after")
+      
     } catch (err) {
-      alert(err.response?.data?.message || "Login Failed");
+      setError(err.response?.data?.message || "Invalid credentials");
     } finally {
       setLoading(false);
     }
@@ -55,6 +55,13 @@ const Login = () => {
           <h1 className="text-2xl font-bold text-slate-800">Welcome Back</h1>
           <p className="text-sm text-slate-500">Sign in to your Mini ERP + CRM Portal</p>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm flex items-center gap-2 animate-in fade-in duration-200">
+            <AlertCircle size={16} className="text-red-500 shrink-0" />
+            <span className="font-medium">{error}</span>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-1.5">
@@ -113,7 +120,7 @@ const Login = () => {
             )}
           </button>
         </form>
-        
+
         <div className="text-center text-xs text-slate-400">
           Internal access only. Unauthorized entries will be logged.
         </div>
