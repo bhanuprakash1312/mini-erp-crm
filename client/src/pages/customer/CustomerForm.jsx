@@ -1,11 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
-import {
-  createCustomer,
-  getCustomerById,
-  updateCustomer,
-} from "../../services/customer";
+import Button from "../../components/common/Button";
+import { ArrowLeft, Loader2, Save } from "lucide-react";
+import { createCustomer, getCustomerById, updateCustomer } from "../../services/customer";
 
 const CustomerForm = () => {
   const navigate = useNavigate();
@@ -90,131 +87,192 @@ const CustomerForm = () => {
     }
   };
 
-  if (loading) return <h2>Loading...</h2>;
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh]">
+        <Loader2 size={36} className="animate-spin text-brand-indigo mb-3" />
+        <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Loading Customer Details...</p>
+      </div>
+    );
+  }
+
+  const inputStyle = "w-full px-3.5 py-2 text-sm border border-slate-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-brand-indigo transition-all disabled:opacity-50 disabled:bg-slate-50";
 
   return (
-    <div>
-
-      <h2>{isEdit ? "Edit Customer" : "Add Customer"}</h2>
-
-      <form onSubmit={handleSubmit}>
-
-        <input
-          name="customerName"
-          placeholder="Customer Name"
-          value={formData.customerName}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          name="businessName"
-          placeholder="Business Name"
-          value={formData.businessName}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          name="mobile"
-          placeholder="Mobile"
-          value={formData.mobile}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <input
-          name="gstNumber"
-          placeholder="GST Number"
-          value={formData.gstNumber}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <select
-          name="customerType"
-          value={formData.customerType}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Customer Type</option>
-          <option value="RETAIL">Retail</option>
-          <option value="WHOLESALE">Wholesale</option>
-          <option value="DISTRIBUTOR">Distributor</option>
-        </select>
-
-        <br /><br />
-
-        <br /><br />
-
-        <textarea
-          name="address"
-          placeholder="Address"
-          value={formData.address}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          required
-        >
-          <option value="">Select Status</option>
-          <option value="LEAD">Lead</option>
-          <option value="ACTIVE">Active</option>
-          <option value="INACTIVE">Inactive</option>
-        </select>
-
-        <br /><br />
-        <br /><br />
-
-        <input
-          type="date"
-          name="followUpDate"
-          value={formData.followUpDate}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <textarea
-          name="notes"
-          placeholder="Notes"
-          value={formData.notes}
-          onChange={handleChange}
-        />
-
-        <br /><br />
-
-        <button type="submit">
-          {isEdit ? "Update Customer" : "Create Customer"}
-        </button>
-
+    <div className="space-y-6 max-w-3xl mx-auto animate-in fade-in duration-300">
+      {/* Back button */}
+      <div>
         <button
-          type="button"
           onClick={() => navigate("/customers")}
+          className="flex items-center gap-1.5 text-sm font-semibold text-slate-550 hover:text-slate-800 transition-colors cursor-pointer"
         >
-          Cancel
+          <ArrowLeft size={16} />
+          <span>Back to Customers</span>
         </button>
+      </div>
 
-      </form>
+      <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+        {/* Card Header */}
+        <div className="px-6 py-5 border-b border-slate-100">
+          <h2 className="text-xl font-bold text-slate-800">{isEdit ? "Edit Customer Profile" : "Add New Customer"}</h2>
+          <p className="text-xs text-slate-400 mt-1">Provide contact details, business entity information, and CRM parameters.</p>
+        </div>
 
+        {/* Form Body */}
+        <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {/* Customer Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">Customer Name *</label>
+              <input
+                required
+                name="customerName"
+                placeholder="Full Name"
+                value={formData.customerName}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* Business Name */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">Business Name</label>
+              <input
+                name="businessName"
+                placeholder="Company/Trade Name"
+                value={formData.businessName}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-655">Email Address</label>
+              <input
+                type="email"
+                name="email"
+                placeholder="email@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* Mobile */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-655">Mobile Number</label>
+              <input
+                type="tel"
+                name="mobile"
+                placeholder="e.g. +91 99999 99999"
+                value={formData.mobile}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* GST Number */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">GST Number</label>
+              <input
+                name="gstNumber"
+                placeholder="e.g. 29AAAAA0000A1Z5"
+                value={formData.gstNumber}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* Customer Type */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">Customer Type *</label>
+              <select
+                name="customerType"
+                value={formData.customerType}
+                onChange={handleChange}
+                required
+                className={inputStyle}
+              >
+                <option value="">Select Type</option>
+                <option value="RETAIL">Retail</option>
+                <option value="WHOLESALE">Wholesale</option>
+                <option value="DISTRIBUTOR">Distributor</option>
+              </select>
+            </div>
+
+            {/* Status */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">Status *</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required
+                className={inputStyle}
+              >
+                <option value="">Select Status</option>
+                <option value="LEAD">Lead</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+            </div>
+
+            {/* Follow-up Date */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-semibold text-slate-650">Follow-up Date</label>
+              <input
+                type="date"
+                name="followUpDate"
+                value={formData.followUpDate}
+                onChange={handleChange}
+                className={inputStyle}
+              />
+            </div>
+
+            {/* Address */}
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-semibold text-slate-650">Billing / Delivery Address</label>
+              <textarea
+                name="address"
+                placeholder="Full street address, city, state, postal code"
+                value={formData.address}
+                onChange={handleChange}
+                className={`${inputStyle} min-h-[80px] resize-y`}
+              />
+            </div>
+
+            {/* Notes */}
+            <div className="space-y-1.5 sm:col-span-2">
+              <label className="text-xs font-semibold text-slate-650">Notes / CRM Follow-up Log</label>
+              <textarea
+                name="notes"
+                placeholder="Internal team notes regarding follow-ups, preferences, or payment history..."
+                value={formData.notes}
+                onChange={handleChange}
+                className={`${inputStyle} min-h-[80px] resize-y`}
+              />
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex items-center gap-3 justify-end pt-5 border-t border-slate-100">
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => navigate("/customers")}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="submit"
+            >
+              <Save size={15} />
+              <span>{isEdit ? "Update Profile" : "Save Profile"}</span>
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
