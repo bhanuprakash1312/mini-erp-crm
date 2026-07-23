@@ -5,7 +5,7 @@ import {
   createCustomer,
   getCustomerById,
   updateCustomer,
-} from "../services/customer";
+} from "../../services/customer";
 
 const CustomerForm = () => {
   const navigate = useNavigate();
@@ -144,12 +144,19 @@ const CustomerForm = () => {
 
         <br /><br />
 
-        <input
+        <select
           name="customerType"
-          placeholder="Customer Type"
           value={formData.customerType}
           onChange={handleChange}
-        />
+          required
+        >
+          <option value="">Select Customer Type</option>
+          <option value="RETAIL">Retail</option>
+          <option value="WHOLESALE">Wholesale</option>
+          <option value="DISTRIBUTOR">Distributor</option>
+        </select>
+
+        <br /><br />
 
         <br /><br />
 
@@ -162,13 +169,19 @@ const CustomerForm = () => {
 
         <br /><br />
 
-        <input
+        <select
           name="status"
-          placeholder="Status"
           value={formData.status}
           onChange={handleChange}
-        />
+          required
+        >
+          <option value="">Select Status</option>
+          <option value="LEAD">Lead</option>
+          <option value="ACTIVE">Active</option>
+          <option value="INACTIVE">Inactive</option>
+        </select>
 
+        <br /><br />
         <br /><br />
 
         <input

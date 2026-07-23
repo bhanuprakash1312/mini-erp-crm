@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getChallans } from "../services/challan";
+import { getChallans } from "../../services/challan";
 
 const ChallanList = () => {
   const navigate = useNavigate();

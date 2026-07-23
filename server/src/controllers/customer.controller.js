@@ -1,20 +1,23 @@
 const customerSchema = require("../validators/customer.validator");
 const customerService = require("../services/customer.service");
 
-const createCustomer = async (req,res)=>{
-    try{
-        const validateddata =  customerSchema.parse(req.body);
+const createCustomer = async (req, res) => {
+  try {
+    const validatedData = customerSchema.parse(req.body);
 
-        const customer = await customerService.createCustomer(validateddata);
-
-        return res.status(201).json({
-            success:true,
-            message:"Customer created successfully",
-            data:customer
-        })
+    if (validatedData.followUpDate) {
+      validatedData.followUpDate = new Date(validatedData.followUpDate);
     }
-  catch (error) {
 
+    const customer = await customerService.createCustomer(validatedData);
+
+    return res.status(201).json({
+      success: true,
+      message: "Customer created successfully",
+      data: customer,
+    });
+
+  } catch (error) {
     if (error.name === "ZodError") {
       return res.status(400).json({
         success: false,

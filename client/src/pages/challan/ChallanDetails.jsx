@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import {
   getChallanById,
   updateChallanStatus,
-} from "../services/challan";
+} from "../../services/challan";
 
 const ChallanDetails = () => {
   const { id } = useParams();

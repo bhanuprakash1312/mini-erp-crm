@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getInventoryHistory } from "../services/inventory";
+import { getInventoryHistory } from "../../services/inventory";
 
 const InventoryHistory = () => {
   const [history, setHistory] = useState([]);

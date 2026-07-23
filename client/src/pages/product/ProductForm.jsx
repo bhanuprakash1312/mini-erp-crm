@@ -5,7 +5,7 @@ import {
   createProduct,
   getProductById,
   updateProduct,
-} from "../services/product";
+} from "../../services/product";
 
 const ProductForm = () => {
   const navigate = useNavigate();

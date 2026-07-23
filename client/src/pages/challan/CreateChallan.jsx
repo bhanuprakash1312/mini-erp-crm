@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { getCustomers } from "../services/customer";
-import { getProducts } from "../services/product";
-import { createChallan } from "../services/challan";
+import { getCustomers } from "../../services/customer";
+import { getProducts } from "../../services/product";
+import { createChallan } from "../../services/challan";
 
 const CreateChallan = () => {
   const navigate = useNavigate();

@@ -31,23 +31,34 @@ const createProduct = async (req, res) => {
     }
 };
 const getProducts = async (req, res) => {
-    try {
-        const products = await productService.getProducts();
+  try {
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const search = req.query.search || "";
 
-        return res.status(200).json({
-            success: true,
-            count: products.length,
-            data: products,
-        });
+    const data = await productService.getProducts(
+      page,
+      limit,
+      search
+    );
 
-    } catch (error) {
-        console.error(error);
+    return res.json({
+      success: true,
+      page,
+      limit,
+      total: data.total,
+      totalPages: data.totalPages,
+      data: data.products,
+    });
 
-        return res.status(500).json({
-            success: false,
-            message: "Internal Server Error",
-        });
-    }
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
 };
 const getProductById = async (req, res) => {
     try {

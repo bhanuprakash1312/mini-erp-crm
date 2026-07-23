@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import SearchBar from "../../components/common/SearchBar";
+
 import {
   getCustomers,
   deleteCustomer,
-} from "../services/customer";
+} from "../../services/customer";
 
 const CustomerList = () => {
   const navigate = useNavigate();
 
   const [customers, setCustomers] = useState([]);
-  const [loading, setLoading] = useState(true);
+
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [search, setSearch] = useState("");
-
   const [page, setPage] = useState(1);
-
   const [totalPages, setTotalPages] = useState(1);
 
   const limit = 10;
@@ -27,13 +29,13 @@ const CustomerList = () => {
       const data = await getCustomers(page, limit, search);
 
       setCustomers(data.data);
-
       setTotalPages(data.totalPages);
 
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
+      setInitialLoading(false);
     }
   };
 
@@ -42,7 +44,6 @@ const CustomerList = () => {
   }, [page, search]);
 
   const handleDelete = async (id) => {
-
     const confirmDelete = window.confirm(
       "Delete this customer?"
     );
@@ -50,21 +51,17 @@ const CustomerList = () => {
     if (!confirmDelete) return;
 
     try {
-
       await deleteCustomer(id);
 
       loadCustomers();
 
     } catch (error) {
-
       console.log(error);
-
       alert("Unable to delete customer");
-
     }
   };
 
-  if (loading) {
+  if (initialLoading) {
     return <h2>Loading...</h2>;
   }
 
@@ -75,13 +72,12 @@ const CustomerList = () => {
 
       <br />
 
-      <input
-        type="text"
-        placeholder="Search customer"
+      <SearchBar
         value={search}
-        onChange={(e) => {
+        placeholder="Search Customer..."
+        onSearch={(value) => {
           setPage(1);
-          setSearch(e.target.value);
+          setSearch(value);
         }}
       />
 
@@ -94,67 +90,78 @@ const CustomerList = () => {
       <br />
       <br />
 
+      {loading && (
+        <p style={{ color: "gray" }}>
+          Searching...
+        </p>
+      )}
+
       <table border="1" cellPadding="10">
 
         <thead>
-
           <tr>
-
             <th>Name</th>
-
             <th>Business</th>
-
             <th>Email</th>
-
             <th>Mobile</th>
-
             <th>Status</th>
-
             <th>Actions</th>
-
           </tr>
-
         </thead>
 
         <tbody>
 
-          {customers.map((customer) => (
+          {customers.length === 0 ? (
 
-            <tr key={customer.id}>
-
-              <td>{customer.customerName}</td>
-
-              <td>{customer.businessName}</td>
-
-              <td>{customer.email}</td>
-
-              <td>{customer.mobile}</td>
-
-              <td>{customer.status}</td>
-
-              <td>
-
-                <button
-                  onClick={() =>
-                    navigate(`/customers/edit/${customer.id}`)
-                  }
-                >
-                  Edit
-                </button>
-
-                <button
-                  onClick={() =>
-                    handleDelete(customer.id)
-                  }
-                >
-                  Delete
-                </button>
-
+            <tr>
+              <td colSpan="6">
+                No Customers Found
               </td>
-
             </tr>
 
-          ))}
+          ) : (
+
+            customers.map((customer) => (
+
+              <tr key={customer.id}>
+
+                <td>{customer.customerName}</td>
+
+                <td>{customer.businessName}</td>
+
+                <td>{customer.email}</td>
+
+                <td>{customer.mobile}</td>
+
+                <td>{customer.status}</td>
+
+                <td>
+
+                  <button
+                    onClick={() =>
+                      navigate(
+                        `/customers/edit/${customer.id}`
+                      )
+                    }
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      handleDelete(customer.id)
+                    }
+                  >
+                    Delete
+                  </button>
+
+                </td>
+
+              </tr>
+
+            ))
+
+          )}
 
         </tbody>
 
@@ -164,7 +171,7 @@ const CustomerList = () => {
 
       <button
         disabled={page === 1}
-        onClick={() => setPage(page - 1)}
+        onClick={() => setPage((prev) => prev - 1)}
       >
         Previous
       </button>
@@ -176,7 +183,7 @@ const CustomerList = () => {
 
       <button
         disabled={page === totalPages}
-        onClick={() => setPage(page + 1)}
+        onClick={() => setPage((prev) => prev + 1)}
       >
         Next
       </button>

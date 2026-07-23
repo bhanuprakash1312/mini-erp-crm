@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { stockIn } from "../services/inventory";
-import { getProducts } from "../services/product";
+import { stockIn } from "../../services/inventory";
+import { getProducts } from "../../services/product";
 
 const StockIn = () => {
   const navigate = useNavigate();
